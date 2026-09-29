@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="MemoryMeet — AI Meeting Prep Agent powered by Hindsight Long-Term Memory.">
+  <title>MemoryMeet — AI Meeting Prep Agent</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Navbar / Header -->
+    <header class="app-header">
+      <div class="brand">
+        <div class="brand-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8z"/>
+            <path d="M12 6v6l4 2"/>
+            <path d="M12 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/>
+          </svg>
+        </div>
+        <div>
+          <h1 class="brand-title">MemoryMeet</h1>
+          <span class="brand-subtitle">AI Meeting Prep Agent with Long-Term Memory</span>
+        </div>
+      </div>
+      <div class="header-badges">
+        <span class="status-pill status-pending" id="connection-status-pill">
+          <span class="pulse-dot"></span>
+          <span id="connection-status-text">Connecting...</span>
+        </span>
+        <span class="status-pill status-hindsight" id="hindsight-bank-pill">
+          <span class="dot-hindsight"></span>
+          <span id="hindsight-bank-text">Hindsight: memorymeet_agent</span>
+        </span>
+      </div>
+    </header>
+
+    <!-- Main Navigation Tabs -->
+    <nav class="nav-tabs">
+      <button class="nav-tab active" data-tab="tab-ingest" id="btn-tab-ingest">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="17 8 12 3 7 8"></polyline>
+          <line x1="12" y1="3" x2="12" y2="15"></line>
+        </svg>
+        <span>1. Ingest Meeting & Retain Memory</span>
+      </button>
+      <button class="nav-tab" data-tab="tab-prepare" id="btn-tab-prepare">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        <span>2. Prepare for Meeting (Memory Recall)</span>
+      </button>
+      <button class="nav-tab" data-tab="tab-history" id="btn-tab-history">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="16" y1="13" x2="8" y2="13"></line>
+          <line x1="16" y1="17" x2="8" y2="17"></line>
+        </svg>
+        <span>3. Meeting History</span>
+      </button>
+    </nav>
+
+    <!-- Main Content Panels -->
+    <main class="main-content">
+      
+      <!-- TAB 1: INGEST MEETING & RETAIN MEMORY -->
+      <section class="tab-panel active" id="panel-ingest">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h3>Ingest Meeting Conversation</h3>
+              <p class="card-desc">Process a recording or transcript to extract facts, decisions, and retain long-term memories into Hindsight.</p>
+            </div>
+            <div class="sub-tab-group">
+              <button class="sub-tab active" id="subtab-transcript">Paste / Sample Transcript</button>
+              <button class="sub-tab" id="subtab-upload">Upload Audio / Video</button>
+            </div>
+          </div>
+
+          <!-- Transcript Input Form -->
+          <div id="form-transcript-view">
+            <div class="sample-chips-bar">
+              <span class="chips-label">Quick Load Sample:</span>
+              <button class="chip-btn" id="btn-sample-1">Sample 1: Product Architecture & Launch</button>
+              <button class="chip-btn" id="btn-sample-2">Sample 2: Security & Budget Review</button>
+            </div>
+
+            <div class="input-group">
+              <label for="input-transcript-title">Meeting Title</label>
+              <input type="text" id="input-transcript-title" class="input-text" placeholder="e.g. Q4 Product Architecture Alignment" value="Q4 Product Architecture Alignment">
+            </div>
+
+            <div class="input-group">
+              <label for="input-transcript-text">Meeting Transcript</label>
+              <textarea id="input-transcript-text" class="input-textarea" rows="8" placeholder="Paste or type meeting dialogue here..."></textarea>
+            </div>
+
+            <div class="action-row">
+              <button class="btn btn-primary" id="btn-process-transcript">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+                </svg>
+                <span>Extract Memories & Retain in Hindsight</span>
+              </button>
+              <span class="loading-spinner hidden" id="ingest-spinner"></span>
+              <span class="status-msg" id="ingest-status-msg"></span>
+            </div>
+          </div>
+
+          <!-- Audio Upload Form -->
+          <div id="form-upload-view" class="hidden">
+            <div class="input-group">
+              <label for="input-audio-title">Meeting Title (Optional)</label>
+              <input type="text" id="input-audio-title" class="input-text" placeholder="e.g. Weekly Executive Standup">
+            </div>
+
+            <div class="file-drop-area" id="file-drop-area">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="17 8 12 3 7 8"></polyline>
+                <line x1="12" y1="3" x2="12" y2="15"></line>
+              </svg>
+              <p>Drag and drop recording file here or <strong>browse files</strong></p>
+              <span class="file-types-hint">Supported: MP3, WAV, M4A, AAC, MP4, WebM (transcribed via Gemini multimodal)</span>
+              <input type="file" id="input-recording-file" accept="audio/*,video/*" class="file-input-hidden">
+            </div>
+            <div class="selected-file-name" id="selected-file-display"></div>
+
+            <div class="action-row">
+              <button class="btn btn-primary" id="btn-upload-recording" disabled>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                </svg>
+                <span>Transcribe & Retain Memory</span>
+              </button>
+              <span class="loading-spinner hidden" id="upload-spinner"></span>
+              <span class="status-msg" id="upload-status-msg"></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Ingestion Results Display -->
+        <div class="card results-card hidden" id="ingest-results-card">
+          <div class="card-header">
+            <div>
+              <div class="badge badge-success" id="result-badge">Memory Successfully Retained</div>
+              <h3 id="result-meeting-title">Meeting Title</h3>
+            </div>
+            <div class="metric-pill" id="result-retained-pill">
+              <span>Hindsight Retained:</span>
+              <strong id="result-retained-count">0 items</strong>
+            </div>
+          </div>
+
+          <div class="summary-box">
+            <h4>Meeting Summary</h4>
+            <p id="result-summary-text"></p>
+          </div>
+
+          <div class="results-grid">
+            <div class="results-col">
+              <h4>Decisions & Policies</h4>
+              <ul class="styled-list" id="result-decisions-list"></ul>
+            </div>
+            <div class="results-col">
+              <h4>Participant Preferences</h4>
+              <ul class="styled-list" id="result-preferences-list"></ul>
+            </div>
+          </div>
+
+          <div class="results-grid">
+            <div class="results-col">
+              <h4>Action Items</h4>
+              <div class="action-items-container" id="result-actions-list"></div>
+            </div>
+            <div class="results-col">
+              <h4>Long-Term Retained Memory Statements (Hindsight)</h4>
+              <ul class="styled-list memory-list" id="result-statements-list"></ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 2: PREPARE FOR MEETING (RECALL + BRIEF) -->
+      <section class="tab-panel hidden" id="panel-prepare">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h3>AI Meeting Preparation Agent</h3>
+              <p class="card-desc">Enter your upcoming meeting topic. The agent recalls historical memories from Hindsight Cloud and synthesizes a high-context executive brief with strategic talking points.</p>
+            </div>
+          </div>
+
+          <div class="sample-chips-bar">
+            <span class="chips-label">Demo Scenarios:</span>
+            <button class="chip-btn" id="btn-prep-scenario-1">Scenario A: Mobile launch timeline with Sarah</button>
+            <button class="chip-btn" id="btn-prep-scenario-2">Scenario B: Sprint planning & async reviews with Alice</button>
+            <button class="chip-btn" id="btn-prep-scenario-3">Scenario C: Security & budget review with Marcus</button>
+          </div>
+
+          <div class="input-group">
+            <label for="input-prep-agenda">Upcoming Meeting Agenda / Topic / Questions</label>
+            <textarea id="input-prep-agenda" class="input-textarea" rows="4" placeholder="e.g. Syncing with Sarah and David regarding the mobile release deadline and any architecture blockers..."></textarea>
+          </div>
+
+          <div class="action-row">
+            <button class="btn btn-accent" id="btn-generate-prep">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <path d="M12 16v-4M12 8h.01"></path>
+              </svg>
+              <span>Recall Memories & Generate Meeting Brief</span>
+            </button>
+            <span class="loading-spinner hidden" id="prep-spinner"></span>
+            <span class="status-msg" id="prep-status-msg"></span>
+          </div>
+        </div>
+
+        <!-- Prep Results Display -->
+        <div class="card results-card hidden" id="prep-results-card">
+          <div class="card-header">
+            <div>
+              <div class="badge badge-accent">Executive Brief Generated</div>
+              <h3 id="prep-agenda-display">Upcoming Meeting Focus</h3>
+            </div>
+            <div class="metric-pill" id="prep-recalled-pill">
+              <span>Hindsight Memories Recalled:</span>
+              <strong id="prep-recalled-count">0 items</strong>
+            </div>
+          </div>
+
+          <!-- Strategic Recommendation Banner -->
+          <div class="strategic-callout">
+            <div class="strategic-icon">💡</div>
+            <div>
+              <strong>Strategic Recommendation</strong>
+              <p id="prep-strategic-rec"></p>
+            </div>
+          </div>
+
+          <!-- Dual Column: Brief vs Recalled Memories -->
+          <div class="prep-layout">
+            <!-- Left: Executive Brief -->
+            <div class="prep-brief-col">
+              <div class="brief-section">
+                <h4>Executive Synthesis</h4>
+                <p id="prep-exec-summary"></p>
+              </div>
+
+              <div class="brief-section">
+                <h4>Recommended Talking Points</h4>
+                <ul class="styled-list" id="prep-talking-points"></ul>
+              </div>
+
+              <div class="brief-section">
+                <h4>Participant Insights & Preferences</h4>
+                <ul class="styled-list" id="prep-participant-insights"></ul>
+              </div>
+
+              <div class="brief-section">
+                <h4>Risks & Unresolved Questions</h4>
+                <ul class="styled-list warning-list" id="prep-risks-list"></ul>
+              </div>
+            </div>
+
+            <!-- Right: Hindsight Recalled Memories Inspector -->
+            <div class="prep-memories-col">
+              <div class="memories-panel">
+                <div class="memories-header">
+                  <h4>Memories Recalled from Hindsight</h4>
+                  <span class="badge-subtle">Bank: memorymeet_agent</span>
+                </div>
+                <p class="memories-sub">Historical facts retrieved via TEMPR hybrid search that primed this briefing:</p>
+                <div class="recalled-items-list" id="prep-recalled-items">
+                  <!-- Dynamic items -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 3: MEETING HISTORY -->
+      <section class="tab-panel hidden" id="panel-history">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h3>Processed Meetings History</h3>
+              <p class="card-desc">Saved meeting records and long-term memory digests stored in SQLite.</p>
+            </div>
+            <button class="btn btn-secondary" id="btn-refresh-history">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+              </svg>
+              <span>Refresh</span>
+            </button>
+          </div>
+
+          <div class="history-table-container">
+            <table class="history-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Meeting Title</th>
+                  <th>Date & Time</th>
+                  <th>Summary</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="history-table-body">
+                <tr>
+                  <td colspan="5" class="table-empty">Loading meeting records...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- App Footer -->
+    <footer class="app-footer">
+      <p>MemoryMeet &bull; AI Meeting Prep Agent with Long-Term Memory &bull; Powered by Gemini & Hindsight Cloud</p>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
